@@ -3,6 +3,7 @@
 ##### Table of Contents  
 [Stage 1](#stage1)  
 [Stage 2](#stage2)  
+[Stage 3](#stage3)  
 
 
 <a name="stage1"/>
@@ -146,3 +147,42 @@ Android Studio by-default targets the latest release. If you’re developing a n
 2. More compact
 3. Easier to write
 4. Allows for declaration of arrays 
+
+#### Stage 2 Completed!
+
+<a name="stage3"/>
+
+## Stage 3 [08-11-2017]
+
+*The first thing to note is that almost every part of recycler view is completely modular. The RecyclerView has an Adapter that is used to provide the RecyclerView with new views when needed. This Adapter is also used to bind data from some Data Source to the views. The adapter sends the views to a RecyclerView in an object called a ViewHolder. The ViewHolder contains a reference to the root view object for the item. And you're expected to use it to cache the view objects represented in the layout, to make it less costly to update the views with new data. This way findViewById gets called only for each data view whenever that new item is created and not each time you want to populate the views in the item with data. The LayoutManager then tells the RecyclerView how to lay out all those views. It could be a vertically scrolling list like we use in SunShine, or Horizontally scrolling lists, or even a staggered list or a grid. You get some awesome animations for item insertion and removal for free. Because it's based on a data source, it's easy for app using RecyclerView to allow for filtering a list items*  
+
+*It's important that you use the view holder to cache the view objects that you're going to be populating with data or images. When the RecyclerView is first being populated. You call findViewById for each view that will be showing data from the adapter. This search can be expensive, especially if you have a hierarchy of views in your list item. So it's best to do it once and cache those views in a view holder. This way you can access those views later without having to look them up repeatedly. If you don't use a view holder calling findViewById for each view can get out of hand pretty quickly*  
+
+**Let’s say that each item in your RecyclerView list contains four individual data views, and you don't cache these views in a ViewHolder. If eight items fit on screen, approximately how many extra findViewById() calls will be made if you scroll through 30 items? In addition to the eight items that fit on screen, assume that two extra items are needed for smooth scrolling.**  
+
+**Note**:-  
+*We use SP and DP when we've reffered to dimensions in Android layouts. These are both not acctual pixel sizes but are automatically scaled to be the same approximately physical size, regardless of the density of the pixels on the screen. The first Android phones were 160 dpi and i dp would actually equal to 1 pixel on these devices. The conversion of dp units to screen pixels is simple, px = dp * (dpi/160). Many modern devices have 480dpi or more. Sp work like DP but are also scaled based upon user preferences, typically the text size preference.*  
+
+>One of the most important things a ViewHolder does is cace these references to the views that will be modified in the adapter since findViewById can get expensive
+
+*The adapter is called by the RecyclerView to create new items in the form of ViewHolders, like the one we just created. It also populates, or binds, these items with data. And return information about the data, such as how many items there are in given data source. This data could come from an ArrayList, the JSON result of a network request, or any other data source you can model. The Adapter requires us to override three functions. The first is onCreateViewHolder, which is called when the RecyclerView instantiaes a new ViewHolder instance. The second is onBindViewHolder, which is called when RecyclerView wants to populate the view with data from our model, So that the user can see it, effectively binding it to the data source. And third is getIteCount, which returns the number of item in our data source.*  
+
+**What is the Adapter responsible for?**  
+1. Creating a ViewHolder for each RecyclerView item.  
+2. Returning the numbers of items in the data source  
+3. Binding data from the data source to each item.  
+4. Inflating each item view that will be displayed.  
+
+>The adapter does create ViewHolder objects and inflates item views in its onCreateViewHolder function, it also returns the number of items in the data source, and binds data from the data source to each item (even if we pass the responsibility to the ViewHolder). It doesn't cache views associated with each item (that's the job of the ViewHolder class) nor does it recycle them; that’s what our RecyclerView does.
+
+>Whereas a ViewHolder determines how an individual entry is displayed, the LayoutManager determines how the collection of items is displayed. LayoutManager is a key part of the way recycling works in RecyclerView since it determines when to recycler items views that are no longer visible to the user.
+
+**Note:-**  
+*Assigning `setHasFixedSize(true)` to true allows RecyclerView to do some optimization on our UI, namely, allowing it to avoid invalidating the whole layout when adapter contents change*  
+
+**Android comes with three LayoutManager**  
+1. LinearLayoutManager  
+2. GridLayoutManager  
+3. StaggeredGridLayoutManager  
+
+#### Stage 3 Completed!
