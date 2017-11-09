@@ -4,6 +4,7 @@
 [Stage 1](#stage1)  
 [Stage 2](#stage2)  
 [Stage 3](#stage3)  
+[stage 4](#stage4)  
 
 
 <a name="stage1"/>
@@ -186,3 +187,60 @@ Android Studio by-default targets the latest release. If you’re developing a n
 3. StaggeredGridLayoutManager  
 
 #### Stage 3 Completed!
+
+<a name="stage4"/>
+
+## Stage 4 [09-11-2017]
+
+**How do we start one activity from another?**  
+*Well, instead of having an activity call each other directly, Android facilitates communiction using messaging objects called Intents. Intents let an app request that an action take place. That can be anything from starting a new activity to picking or displaying a photo from your phone gallery, or make a phone call*  
+
+>In an android application, activities can be started and stopped at any time, So the context gives us a way of doing certain things that might effect an app as a whole or might outlive the lifetime of a single activity 
+
+>Most implicit intents include two things, an action and a data. The action says what you're trying to do and the data is what you're passing onto the action
+
+>query parameter limit from 8000 to 190,000 characters, depending on the browser used.
+
+**A URI is like an address that points to the data you're plannning to pass through to the intended action**  
+
+>A URI or Uniform Resource Identifier is a string of characters that identifies a resource. One of the ways you use URIs every day is when you navigate to web addresses like https://www.udacity.com The formal name of a web address is a URL or Uniform Resource Locator. A URL is a URI that identifies a web or network resource. But as we saw in the Android documentation for opening a map, a URI like geo can describe a physical location.
+
+`scheme:[//[user:password@host[:port]][/]path[?query][#fragment]`
+
+*Here's the full form of a URI, |^| with all the optional parts shown in brackets. It begins with a scheme. The scheme describe what type of resource we're pointing to. Popular schemes on the web are HTTP  and HTTPS, mailto, FTP, file, and geo, but there are many more. Depending on the particular scheme, it might be followed by two slashes and an authority part. The authority indicates an optional username and password to log in, a host name which could be a domain name or an IP address, and an optional port. For HTTP request, unless otherwise stated, browsers assume port 80.*
+
+>mailto is one of the schemes that doesn't require the authority part and can worrk with just a path
+
+>It's important to note that if there is a query paramters for our street address or business, the lat long  path must be 0,0
+
+`geo:0,0?q=Antwerp,Belgium&z=10`
+
+>Here is a |^| geo URI that shows the city of Antwerp in Belgium with a zoom factor of 10
+
+*When you want to share data there's a lot more you need to think about, than if you're just starting a new activity. Depending on where you want to send the data you have to think about what type of data it is, the number of files and other things. To save you from all those concerns Android had a special helper class called ShareCompat. ShareCompat and it's inner class IntentBuilder abstract away all of these decision so you can chain together the bits that you need and ignore those that you don't*
+
+>Every type of content that can be transmitted on the internet has two part identifier and that's called media type. You might see the more archaic name sometimes, MIME type, which stands for Multipurpose Internet Mail Extensions. When they were initially defined for RFC 2046, media types allowed you to have multi-part emails with different types of attachments. Media types are a reason why someone can send a single email with images, video and other file types as attachments, and your email client knows exactly how to interpret each file. A media type string consists of a type, a subtype, and optional paramters.*
+
+**Media Type String**
+`top-level name / subtype name [; paramters]`
+
+**Here's an example media type that describes most of the web pages on the internet** 
+`text/html; charset=UTF-8`
+
+>The type of data is text specially HTML text, and it has a character set encoding of UTF-8 
+
+**More Examples**  
+1. text/plain
+2. text/rtf
+3. image/png
+4. video/mp4
+
+>Whenever you want ot share between apps, you'll have to specify it's media type so that Android can determine how and if it can fulfill the request 
+
+*Opening a web link would be an implicit intent because you aren’t specifying a specific browser to use, the user gets to choose.
+
+Opening an activity uses an explicit intent because you know exactly where to go.
+
+Sharing content to Twitter is a bit of a curveball. We’ve taught you the best way to do it using an implicit intent. It is possible as an explicit intent but not recommended.*
+
+#### Stage 4 Completed

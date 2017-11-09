@@ -19,10 +19,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 .path("0,0")
                 .query(addressString);
         Uri addressUri = builder.build();
+        Log.d("varun", addressUri.toString());
 
         // COMPLETED (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
         showMap(addressUri);
