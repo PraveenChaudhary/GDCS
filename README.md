@@ -5,6 +5,7 @@
 [Stage 2](#stage2)  
 [Stage 3](#stage3)  
 [stage 4](#stage4)  
+[stage 5](#stage5)  
 
 
 <a name="stage1"/>
@@ -26,7 +27,7 @@
 *By comparison, the targetSDK is NOT a high pass filter -- it’s used only to declare which platform version you've tested your app on. An app targeted to a certain API or Android version will continue to be forward compatible on future releases -- the platform uses the target SDK values in case a future release makes a significant change to expected behavior, ensuring your app doesn’t break when a user’s phone gets upgraded.  
 Android Studio by-default targets the latest release. If you’re developing a new app, there’s really no reason to target anything but the latest Android version, and once your app has been released, make it a point to update your target SDK and test as soon as possible when new platform releases roll out, so your app can take advantage of every new platform optimization and improvement.**
 
->Your app runs within its own instance of the run time using the classes and services provided here in the application framework. 
+>Your app runs within its own instance of the run time using the classes and services provided here in the application framework.
 
 **The first thing that happens when you hit RUN is your code gets compiled into byte code that can be run in the run time on the device. In Android Studio is done using Gradle, a build tool kit manages dependencies and allows you to define custom build logic. For now, not that we start with your project, whic Gradle builds and then packages the byte code along with your applications resources, externalized images, UI, XML, into an Android Application Package file. An APK whic is especially formatted ZIP file. Once you got a APK ready to go Android Studio signs it through JAR Signer and then pushes it to the device using the Androdi Debug Bridge or ADB
 
@@ -120,7 +121,7 @@ Android Studio by-default targets the latest release. If you’re developing a n
 
 *To run at an ideal 60 frames per second We need to make sure that all the computations between draws takes  less than 17 milliseconds*  
 
->After five second of ignoring user input, Android would actually prompt the user to close your app. 
+>After five second of ignoring user input, Android would actually prompt the user to close your app.
 
 **AsyncTask**  
 *Allows you to run a task on a background thread, while publishing results to the UI thread*  
@@ -147,7 +148,7 @@ Android Studio by-default targets the latest release. If you’re developing a n
 1. Human readable
 2. More compact
 3. Easier to write
-4. Allows for declaration of arrays 
+4. Allows for declaration of arrays
 
 #### Stage 2 Completed!
 
@@ -195,7 +196,7 @@ Android Studio by-default targets the latest release. If you’re developing a n
 **How do we start one activity from another?**  
 *Well, instead of having an activity call each other directly, Android facilitates communiction using messaging objects called Intents. Intents let an app request that an action take place. That can be anything from starting a new activity to picking or displaying a photo from your phone gallery, or make a phone call*  
 
->In an android application, activities can be started and stopped at any time, So the context gives us a way of doing certain things that might effect an app as a whole or might outlive the lifetime of a single activity 
+>In an android application, activities can be started and stopped at any time, So the context gives us a way of doing certain things that might effect an app as a whole or might outlive the lifetime of a single activity
 
 >Most implicit intents include two things, an action and a data. The action says what you're trying to do and the data is what you're passing onto the action
 
@@ -224,10 +225,10 @@ Android Studio by-default targets the latest release. If you’re developing a n
 **Media Type String**
 `top-level name / subtype name [; paramters]`
 
-**Here's an example media type that describes most of the web pages on the internet** 
+**Here's an example media type that describes most of the web pages on the internet**
 `text/html; charset=UTF-8`
 
->The type of data is text specially HTML text, and it has a character set encoding of UTF-8 
+>The type of data is text specially HTML text, and it has a character set encoding of UTF-8
 
 **More Examples**  
 1. text/plain
@@ -235,7 +236,7 @@ Android Studio by-default targets the latest release. If you’re developing a n
 3. image/png
 4. video/mp4
 
->Whenever you want ot share between apps, you'll have to specify it's media type so that Android can determine how and if it can fulfill the request 
+>Whenever you want ot share between apps, you'll have to specify it's media type so that Android can determine how and if it can fulfill the request
 
 *Opening a web link would be an implicit intent because you aren’t specifying a specific browser to use, the user gets to choose.
 
@@ -243,4 +244,39 @@ Opening an activity uses an explicit intent because you know exactly where to go
 
 Sharing content to Twitter is a bit of a curveball. We’ve taught you the best way to do it using an implicit intent. It is possible as an explicit intent but not recommended.*
 
-#### Stage 4 Completed
+#### Stage 4 Completed!
+
+<a name="stage5"/>
+
+## Stage 5 [10-11-2017]
+
+#### Activity Lifecycle Diagram
+
+![Activity Lifecycle Diagram](./Activity_Lifecycle_Methods.png "Activity Lifecycle Diagram")
+
+*The **Active** Lifecycle is when your activity is in the foreground and has focus. Here it's actively receiving input from user events. And no other activities are obscuring it. **onPause** is call, and the **active** lifetime ends as soon as your activity is partially obscured, like when you have another activity trying to fulfill an implicit intent and user needs to make a selection. So to make efficient use of limited resources, you'll want to use these signals to adjust your app's resource burden. So most updates to your UI can be paused when this life time ends, which is announced by onPause. But as you see, the app is still visible So, you shouldn't pause any processes that are drawing your UI. The visible lifetime on the other hand, continues whenever the app is all visible and ends as soon as it's completely obscured by another app. At that point our app is moved to the background. So when you see onStop you know the user can't see your app at all. So, while onCreate and onDestroy will be called at most once each time your app is run. These handler (See the picture below) are likely to be called many times while the app is running.*  
+
+![Android App Lifecycle Methods](./Three_Activity_Lifecycle_Methods.png "Activity Lifecycle Methods")
+
+*Rotating the device causes the Activity to be destroyed and recreated, so our lifecycle starts at onPause and ends at onResume. Note that we don't see onRestart, which only happens if the activity is stopped (but not destroyed) and then restarted.*
+
+>OnSaveInstanceState takes a bundle as its parameter. This bundle is a key value storage mechanism that we use to store the data we want to be saved. Now it can't quite store any data. Bundles need to passed between processes or serialized to a file. So they support a limited set of types. That being said, you can add complex types to a bundle by having them implement the parcelable interface. The parcelable effectively contains the instructions for how to output an Object to a stream of data, and then recreate the object from that stream.
+
+**onSaveInstanceState is called after the onPause but before onStop, onDestroy**
+
+>onPause and onStop are singnals that our app may be killed imminently. So we need to clean up any resources that need an orderly tear down such as closing an open connections or sockets.
+
+*When we destroy and recreate an activity the application continues to run. That means that all of the threads that were running continue to merrily process away. In the case of our GitHub query app it delivers the result of the query to a zombie activity that has gone away and the activity is left empty. But it's even worse in the current version of sunshine. In sunshine, we create our AsyncTask in the onCreate method of our activity. It starts a thread which begins a background task. If we rotate the device or do something else which causes the activity to be restarted, the new activity will create another async task to do the background operation. There will be extra network usage as both threads run in parallel and it will take a longer time for the user to see the result of the load. Even worse because those background thread ultimately deliver their result to a callback that's part of the activity, those async tasks actually keep all of those old zombie activities around as long as the threads are running casuing extra memory pressure. Enter loaders to solve this problem. They've been part of Android since Hineycomb and were added to the support library so they are available on any useful Android release. Loaders provide a framework to perform asynchronous loading of data. They're registered by ID, with a component called the LoaderManager, which allows them to live beyond the life cycle of the activity they are associated with, preventing duplicate loads from happening in parallel. If we want to load data on a background thread, we can use an implementation of a loader pattern called AsyncTaskLoader. The AsyncTaskLoader implements the same functionality as AsyncTask, but because its a loader its lifecycle is different. With an AsyncTaskLoader, once we rotate the device, the loader manager will make sure that the running loader is connected to the AsyncTaskLoader equivalent of onPostExecute the onLoadFinished function. The loader thread keeps running in the loadInBackground function. And once it finishes, the activity gets notified through onLoadFinished.*
+
+>AsyncTaskLoader is a better choice for Activity-bound thread management, because it handles lifecycle changes correctly, delivering the result to the current active activity, preventing duplication of background threads, and helping to eliminate duplication of zombie activities.
+
+*Creating loader is actually pretty simple. We start off by creating an integer constant for a loader ID. Then, we implement the loader call backs. Finally, we initialize the loader with the loaderManager*
+
+>restartLoader will create loader if it doesn't yet exist
+
+>Loaders are tied to the application lifecycle. They automatically handle changes in configuration, such as rotation. They are designed to reload if the user navigates away from the activity and then return. We can avoid that extra load if we don't find it desirable by caching and redelivering our existing result. 
+
+
+**If you want to cache your result and put it back if you don't need to ftech the data again save the result and override deliverResult().**
+
+#### Stage 5 Completed!

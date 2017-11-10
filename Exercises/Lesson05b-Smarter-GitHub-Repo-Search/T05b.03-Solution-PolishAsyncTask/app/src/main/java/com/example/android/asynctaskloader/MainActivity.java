@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements
                  */
                 if (mGithubJson != null) {
                     deliverResult(mGithubJson);
+                    mLoadingIndicator.setVisibility(View.INVISIBLE);
                 } else {
                     forceLoad();
                 }
