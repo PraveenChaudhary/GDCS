@@ -6,6 +6,7 @@
 [Stage 3](#stage3)  
 [stage 4](#stage4)  
 [stage 5](#stage5)  
+[stage 6](#stage6)  
 
 
 <a name="stage1"/>
@@ -280,3 +281,76 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 **If you want to cache your result and put it back if you don't need to ftech the data again save the result and override deliverResult().**
 
 #### Stage 5 Completed!
+
+<a name="stage6"/>
+
+## Stage 6 [06-10-2017]  
+
+**Data Persistence**  
+
+| Persistence Option        | Type of data saved                                    | Length of time saved                                                          |
+| -------------------------:| -----------------------------------------------------:| -----------------------------------------------------------------------------:|
+| onSaveInstanceState       | key/value(complex value by using parcelable interface)| While app is open                                                             |
+| SharedPreferences         | key/value(primitive values)                           | Between app and phone restarts                                                |
+| SQLite Database           | Organized, more complicated text/numeric/boolean data | Between app and phone restarts                                                |
+| Internal/External storage | Multimedia or larger data                             | Between app and phone restarts                                                |
+| Server (ex. Firebase)     | Data that multiple phones will access                 | Between app and phone restarts, deleting the app, using a different phone, etc|
+
+**PreferenceFragment**  
+*Because SharedPreferences are usually used for app settings, they work hand-in-hand with another part of the Android Framework. Which was meant for creating user interface for settings activities. This framework class is called PreferenceFragment.*  
+
+**Fragment**  
+*A class that represents a modular and reusable piece of an Activity*  
+
+>The PrefernceFragment subclass is specially built for displaying prefenrences  
+
+*There's also a class called PreferenceActivity which I don't want you to confuse things with. Since Honeycomb it's been deprecated in favor of the more flexible fragment version.*  
+
+*PreferenceFragments populate themselves with preferences defined in XML. This is much like how our activity layouts are also created in XML. The XML is used to generate UI widgets in the fragment. When the user changes these values in the widgets, this automagically updates associated key value pairs in the SharedPreferences file.Then when you need to actually know the value of the preference, you can then read from the SharedPreferences file in your app*  
+
+`android:launchMode="singleTop"`
+*This |^| this make sure that when you navigate back from SettingsActivity it doesn't remake the VisualizerActivity  
+
+1. Astro   
+2. Bender  
+
+**Any preference XML's outer tag is always a PreferenceScreen tag. Within that tag you can nest other preferences tags of different types. YOu can even nest other PrefefrenScreen tags if you want. This will create a nesrted hierarchy of preferences. What do I mean by a nested hierarchy of preferences? Well here, I'm in the phones settings screen. And if I click on the display it would actually show me another settings screen**  
+
+*Once you've decided which get method to use, you pass in the string whcich is the key of the preference and then you pass in the default value, which is basically the result of this call if that preference wa not found in the file. Note that of course the default value always matches the type of the return of that call. Also note that there's no type checking so if you tell SharedPreferences to get you a long when there's actually a string stored in there which cannot be converted to a long, the app will crash.*  
+
+```java
+SharedPreferences.Editor editor = new sharedPreferences.edit();
+editor.putBoolean("show_bass", true);
+editor.apply();
+editor.commit();//use apply insted of commit because apply perform the update off the main thread
+```
+
+***getDefaultSharedPreferences** : Gets a SharedPreferences instance that points to the default file that is used by the preference framework in the given context!*  
+
+***getSharedPreferences:** Gets a specific SharedPreferences instance by name in case you have more than one preference in the same context!*  
+
+**The SharedPreferences object allows you to register an object that implements an OnSharedPrefernceChangeListener. This object then gets called whenever a value in the SharedPreferences file changes. In this way, you can actually be tiggered to update the UI if and only if a preference is actually changed**  
+
+**Setting PreferenceChangeListener take 4 steps**  
+1. Determine Activity  
+2. Activity implement OnSharedPrefernceChangeListener  
+3. Link Listener to Shared Preference File using .registerOnSharedPreferenceChangeListener  
+4. Unregister the listener using .unregisterOnSharedPreferenceChangeListener  
+
+**Setting an acceptable range**  
+*To limit the acceptable values between 0 (non inclusive) and 3 (inclusive) we opted to use a PreferenceChangeListener - this is not the same as a SharedPreferenceChangeListener. The differences are:*  
+
+>SharedPreferenceChangeListener is triggered after any value is saved to the SharedPreferences file. PreferenceChangeListener is triggered before a value is saved to the SharedPreferences file. Because of this, it can prevent an invalid update to a preference. PreferenceChangeListeners are also attached to a single preference.
+
+**Generally the flow goes like this:**
+1. User updates a preference.
+2. PreferenceChangeListener triggered for that preference.
+3. The new value is saved to the SharedPreference file.
+4.  onSharedPreferenceChanged listeners are triggered.
+
+**Should it be a Setting**  
+*Here's a handy flowchart to help you decide if something is worth being a settings or should you just decide for the user a default value for:*  
+
+![Should it be a Setting Flow Chart](./Should_it_be_a_setting_flow_chart.png "Should it be a Setting Flow Chart")  
+
+#### Stage 6 Completed!

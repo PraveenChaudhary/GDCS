@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -327,6 +328,11 @@ public class MainActivity extends AppCompatActivity implements
         MenuInflater inflater = getMenuInflater();
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
         inflater.inflate(R.menu.forecast, menu);
+
+        MenuItem menuItem = menu.getItem(2);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        menuItem.setIntent(intent);
+
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
     }
@@ -339,18 +345,16 @@ public class MainActivity extends AppCompatActivity implements
             invalidateData();
             getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
             return true;
-        }
-
-        if (id == R.id.action_map) {
+        } else if  (id == R.id.action_map) {
             openLocationInMap();
             return true;
         }
 
         // TODO (1) Add new Activity called SettingsActivity using Android Studio wizard
-        // Do step 2 in SettingsActivity
-        // TODO (2) Set setDisplayHomeAsUpEnabled to true on the support ActionBar
+
 
         // TODO (6) Launch SettingsActivity when the Settings option is clicked
+
 
         return super.onOptionsItemSelected(item);
     }

@@ -52,6 +52,11 @@ public class DetailActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.detail, menu);
         MenuItem menuItem = menu.findItem(R.id.action_share);
         menuItem.setIntent(createShareForecastIntent());
+
+        MenuItem menuItem2 = menu.getItem(1);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        menuItem2.setIntent(intent);
+
         return true;
     }
 

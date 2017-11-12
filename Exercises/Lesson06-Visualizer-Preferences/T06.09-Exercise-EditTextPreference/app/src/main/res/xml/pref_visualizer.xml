@@ -25,6 +25,10 @@
 
     <!-- TODO (1) Add and EditTextPreference with all of the appropriate strings stored in strings.xml.
         It should have a key, default value of 1 and title -->
+    <EditTextPreference
+        android:defaultValue="@string/pref_edit_text_default_value"
+        android:title="@string/pref_edit_text_label"
+        android:key="@string/pref_edit_text_key" />
 
     <ListPreference
         android:defaultValue="@string/pref_color_red_value"
