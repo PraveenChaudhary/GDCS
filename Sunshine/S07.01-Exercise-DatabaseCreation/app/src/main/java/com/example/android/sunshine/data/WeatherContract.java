@@ -15,6 +15,8 @@
  */
 package com.example.android.sunshine.data;
 
+import android.provider.BaseColumns;
+
 /**
  * Defines table and column names for the weather database. This class is not necessary, but keeps
  * the code organized.
@@ -23,7 +25,8 @@ public class WeatherContract {
 
 //  TODO (1) Within WeatherContract, create a public static final class called WeatherEntry that implements BaseColumns
 
-//      Do steps 2 through 10 within the WeatherEntry class
+public static final class WeatherEntry implements BaseColumns {
+    //      Do steps 2 through 10 within the WeatherEntry class
 
 //      TODO (2) Create a public static final String call TABLE_NAME with the value "weather"
 
@@ -41,4 +44,14 @@ public class WeatherContract {
 //      TODO (9) Create a public static final String call COLUMN_WIND_SPEED with the value "wind"
 
 //      TODO (10) Create a public static final String call COLUMN_DEGREES with the value "degrees"
+    public static final String TABLE_NAME = "weather";
+    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_WEATHER_ID = "weather_id";
+    public static final String COLUMN_MIN_TEMP = "min";
+    public static final String COLUMN_MAX_TEMP = "max";
+    public static final String COLUMN_HUMIDITY = "humidity";
+    public static final String COLUMN_PRESSURE = "pressure";
+    public static final String COLUMN_WIND_SPEED = "wind";
+    public static final String COLUMN_DEGREES = "degrees";
+}
 }

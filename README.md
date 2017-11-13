@@ -7,6 +7,7 @@
 [stage 4](#stage4)  
 [stage 5](#stage5)  
 [stage 6](#stage6)  
+[stage 7](#stage7)  
 
 
 <a name="stage1"/>
@@ -284,7 +285,7 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 
 <a name="stage6"/>
 
-## Stage 6 [06-10-2017]  
+## Stage 6 [11-11-2017]  
 
 **Data Persistence**  
 
@@ -354,3 +355,50 @@ editor.commit();//use apply insted of commit because apply perform the update of
 ![Should it be a Setting Flow Chart](./Should_it_be_a_setting_flow_chart.png "Should it be a Setting Flow Chart")  
 
 #### Stage 6 Completed!
+
+<a name="stage7"/>
+
+## Stage 7 [12-11-2017]
+
+*On older android devices, this shared storage was actually on an external memory card.Today most android devices only emulate this card, so that there is the shared external storage app need available on the device. Some android devices have emulated shared storage and secondary external storage. Android 4.4 KitKat added 
+an API to allow developers to access this secondary external storage*  
+
+>Contract in android is a class that defines the tables and the columns for each table that are included in the database. A good way to organize the contract class, is to put the definitions that relate generally to the whole database directly in the contract class. And then create an inner class for each table, and then includes the columns for each of those tables inside that inner class  
+
+**You should never need to create an instance of the contact class, because the contract just a class filled, with DB realted constants that are all static.**  
+
+>Also note that inner class inside the contract class needd to implement the BaseColumns interface. The base columns interface, automatically includes a constant representing the primary key field called _ID. Some android adapters will expect your contact to have this constant defined. It's not always required to implement BaseColumns interface, but that can help your database fit in better with the android framework.  
+
+*Unit tests are designed to verify that a small, individual part of the code, works as expected.*  
+
+>For creating database, we need to create a new class known as DBHelper. Because we will be using SQLite as our database, we'll extend the Android class SQLiteOpenHelper to create our DBHelper class. SQLiteOpenHelper exits mainly to take care of creating the database for the first time and upgrading it when the schema changes. The DBHelper also provides other classes with a reference to the database, giving them a way to access it's information through queries. SQLiteOpenHelper provides us with two important methods, onCreate and onUpgrade. onCreate is responsible for creating the actual database for the first time, while onUpgrade is responsible for making sure the database schema is up to date.  
+
+*Inside the DBHelper class create a final string to store the name of the database and a final integer to store the current database version number. This should always start from one and any time you decide to modify the data base schema in your code, you should increment it. This will force user to upgrade their databases whenever you release a new version of the app. Also, don't forget to change the contract if you ever do change the database schema.*  
+
+**onUpgrade() method will only called when the version number we defined earlier becomes larger than the version number of the database on the device. It's meant to upgrade the database schema without losing any user data, so ideally this should include a schema update statement.**  
+
+>If we weren't inserting any data but just interested in reading data, we could use a getReadableDatabase() instead of getWritableDatabase().  
+
+**A cursor is what any SQL query result will be stored in. The cursor class allow you to iterate, over the query result in a very easy and simple way**  
+
+*A result of any selection query is formed as a table*  
+
+>You can think of the cursor as if it's pointing to a particlar row in that result. To extract information from a particular row, you can move the cursor to point there, and then extract the specific goal information. For example, to get the guest name in the fourth row, move the cursor to the fourth position, and then call getString, passing in the index of that column.  
+
+`mCoursor.moveToPosition(position)`  
+|^| this will return false if there's no data there, or if it's out of the bounds of the cursor so, make sure you add a check  
+
+>To insert data into the database, we need to use a ContentValues object that maps coulmn names as the key to the desired values. see the example below  
+
+`contentValuesObject.put(colmnsName, value);`  
+
+>Now that we have our ContentValues object ready, we can call insert passing in the table name and the ContentValues object. This will insert a new row in the table with the value specified in CV. we call the insert method on SQLiteDatabse object who is getting the refference from our DBHelper class OBJECT.getReadableDatabase() or OBJECT.getWritableDatabase() and our DBHelper class is extending the SQLiteOpenHelper class that's why we get the writeable and readable methods  
+
+>If you change the database schema, you must increment the database version or the onUpgrade method will not be called.  
+
+*RecyclerView offers something called a **tag** object it's meant to store any data that doesn't need to be displayed*  
+
+**SQLite swag**  
+`"UNIQUE (" + WeatherEntry.COLUMN_DATE + ") ON CONFLICT REPLACE);";`  
+
+#### Stage 7 Completed!  
