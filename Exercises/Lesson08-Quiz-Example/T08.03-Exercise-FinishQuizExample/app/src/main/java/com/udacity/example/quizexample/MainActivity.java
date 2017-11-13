@@ -23,14 +23,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
+
+import org.w3c.dom.Text;
 
 /**
  * Gets the data from the ContentProvider and shows a series of flash cards.
  */
 
 public class MainActivity extends AppCompatActivity {
+
+    int mColumnWordIndex;
+
+    int mColumnDefinitionIndex;
 
     // The data from the DroidTermsExample content provider
     private Cursor mData;
@@ -48,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     // advance the app to the next word
     private final int STATE_SHOWN = 1;
 
+    private TextView mWord;
+    private TextView mDefinition;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         // Get the views
         // TODO (1) You'll probably want more than just the Button
         mButton = (Button) findViewById(R.id.button_next);
+        mWord = (TextView) findViewById(R.id.text_view_word);
+        mDefinition = (TextView) findViewById(R.id.text_view_definition);
 
         //Run the database operation to get the cursor off of the main thread
         new WordFetchTask().execute();
@@ -92,6 +104,16 @@ public class MainActivity extends AppCompatActivity {
         // If you reach the end of the list of words, you should start at the beginning again.
         mCurrentState = STATE_HIDDEN;
 
+        if (mData != null) {
+            mDefinition.setVisibility(View.INVISIBLE);
+            if (mData.moveToNext()) {
+                mWord.setText(mData.getString(mColumnWordIndex));
+            } else {
+                mData.moveToFirst();
+                mWord.setText(mData.getString(mColumnWordIndex));
+            }
+        }
+
     }
 
     public void showDefinition() {
@@ -101,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO (4) Show the definition
         mCurrentState = STATE_SHOWN;
+
+        if (mData != null) {
+            mDefinition.setVisibility(View.VISIBLE);
+            mDefinition.setText(mData.getString(mColumnDefinitionIndex));
+        }
 
     }
 
@@ -138,6 +165,14 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO (2) Initialize anything that you need the cursor for, such as setting up
             // the screen with the first word and setting any other instance variables
+            if (mData != null) {
+                mColumnWordIndex = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD);
+                mColumnDefinitionIndex = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION);
+                if (mData.moveToNext()) {
+                    mWord.setText(mData.getString(mColumnWordIndex));
+                    mCurrentState = STATE_HIDDEN;
+                }
+            }
         }
     }
 

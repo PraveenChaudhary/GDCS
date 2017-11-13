@@ -21,7 +21,7 @@
         android:layout_margin="16dp"
         android:layout_weight="3"
         android:gravity="center"
-        android:text="A sample word"
+        tools:text="A sample word"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -37,10 +37,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="5"
         android:gravity="center"
+        android:visibility="invisible"
         android:paddingBottom="8dp"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         android:paddingTop="8dp"
-        android:text="A sample description. Should be deleted." />
+        tools:text="A sample description. Should be deleted." />
 
 </LinearLayout>

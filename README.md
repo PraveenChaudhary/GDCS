@@ -4,10 +4,11 @@
 [Stage 1](#stage1)  
 [Stage 2](#stage2)  
 [Stage 3](#stage3)  
-[stage 4](#stage4)  
-[stage 5](#stage5)  
-[stage 6](#stage6)  
-[stage 7](#stage7)  
+[Stage 4](#stage4)  
+[Stage 5](#stage5)  
+[Stage 6](#stage6)  
+[Stage 7](#stage7)  
+[Stage 8](#stage8)  
 
 
 <a name="stage1"/>
@@ -289,13 +290,13 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 
 **Data Persistence**  
 
-| Persistence Option        | Type of data saved                                    | Length of time saved                                                          |
-| -------------------------:| -----------------------------------------------------:| -----------------------------------------------------------------------------:|
-| onSaveInstanceState       | key/value(complex value by using parcelable interface)| While app is open                                                             |
-| SharedPreferences         | key/value(primitive values)                           | Between app and phone restarts                                                |
-| SQLite Database           | Organized, more complicated text/numeric/boolean data | Between app and phone restarts                                                |
-| Internal/External storage | Multimedia or larger data                             | Between app and phone restarts                                                |
-| Server (ex. Firebase)     | Data that multiple phones will access                 | Between app and phone restarts, deleting the app, using a different phone, etc|
+| Persistence Option | Type of data saved | Length of time saved |
+| --- |--- | --- |--- |
+| onSaveInstanceState | key/value(complex value by using parcelable interface) | While app is open |
+| SharedPreferences | key/value(primitive values) | Between app and phone restarts |
+| SQLite Database | Organized, more complicated text/numeric/boolean data | Between app and phone restarts |
+| Internal/External storage | Multimedia or larger data | Between app and phone restarts |
+| Server (ex. Firebase) | Data that multiple phones will access | Between app and phone restarts, deleting the app, using a different phone, etc |
 
 **PreferenceFragment**  
 *Because SharedPreferences are usually used for app settings, they work hand-in-hand with another part of the Android Framework. Which was meant for creating user interface for settings activities. This framework class is called PreferenceFragment.*  
@@ -402,3 +403,94 @@ an API to allow developers to access this secondary external storage*
 `"UNIQUE (" + WeatherEntry.COLUMN_DATE + ") ON CONFLICT REPLACE);";`  
 
 #### Stage 7 Completed!  
+
+<a name="stage8"/>
+
+## Stage 8 [13-11-2017]
+
+*Now usually data sources like a SQLite database are private to the app which created them. This is done for security reasons. So how do two totally different apps easily read and write from the same source? This is where ContentProviders come in. In short, a ContentProvider is a class that sits between an application and its Data Source. And it's job is to provide easily managed access to the underlying data source*  
+
+**ContentProvider Advantages**  
+1. Easily change underlying data source.  
+2. Leverage functionality of Android Classes. ex Loaders and CursorAdapters.  
+3. Allow many apps to access, use and modify a single data source securely.  
+
+### Big Picture of How ContentProvider and ContentResolver works together  
+![ContentProviderAndContentResolver](./ContentProviderAndContentResolver.png "ContentProviderAndContentResolver")
+
+**General Steps for Using a ContentProvider**  
+*You will take the following steps:*  
+1. Get permission to use the ContentProvider.  
+2. Get the ContentResolver.  
+3. Pick one of four basic actions on the data: query, insert, update, delete.  
+4. Identify the data you are reading or manipulating to create a URI.  
+5. In the case of reading from the ContentProvider, display the information in the UI.  
+
+#### Steps for using a ContentProvider  
+
+*Complete each of the following*  
+
+1. Get permission to use the ContentProvider  
+`<uses-permission android:name="com.example.udacity.droidtermexample.TERM_READ"/>`
+*Why ask for permission -> It's a security feature of ContentProvider, that they're protected by the same permissioning system that will pop-up these dialogues which inform the user of what the app actually does. Since you must request permissions to use ContentProviders, this mean that an evil developer can not just get access to any data on the user's phone that they want. For example, they can't use the Contacts ContentProvider to say steal all of the user's friends emails. Or at least they wouldn't be able to do it without a dialogue popping up requiring the user's consent.*  
+
+
+2. Get the ContentProvider
+`ContentResolver resolver = getContentResolver();
+Cursor cursor = resolver.query(DroidTermExampleContract.CONTENT_URI, null, null, null, null);
+` *This above code accesses the correct content provider and grabs some data from it. Or you can say getting us a refference to the system's ContentResolver*  
+
+*So what's the purpose of having ContentResolver class sit between your app and direct access to the ContentProvider?*
+>If you think about it, there are multiple ContentProvider on your phone, and you add more ContentProviders when you download apps, that store local data, which use ContentProviders. Besides the DroidTermsExample ContentProvider, you have a ContentProvider for contacts, your device has one for user files of the device, one that keeps track of user alarms, the calendar provider, and some others. Also, your app is not the only app running on the device. There are other apps that might also be using ContentProvider in parallel. Managing what ContentProvider are talking to what apps, and keeping all the data in sync could turn into a huge traffic jam. That's where the ContentResovler comes in. The ContentResolver acts as an intermediary between each app and the ContentProvider, or provides, it want to access. It hanles inter-process communication and keeps everything in sync and running smoothly. Even if you have five processes accesasing two ContentProviders.  
+
+
+3. Pick one of four basic action: query, insert, update, delete
+    1. Read from the data -> query()
+    2. Add a row or rows to the data -> insert()
+    3. Update the data -> update()
+    4. Delete a row or rows from the data -> delete()
+    *So basically, you specify what you want to do, by calling ContentResolver. and then one of those methods. Then the ContentResolver tells your ContentProvider to performm that action.  
+
+4. Use a URI to identify the data you are reading or manipulating
+`content://com.example.udacity.droidtermexample/terms`
+*Content Provider Prefix://Content Authority or Which ContentProvider to use / Specefic Data or which table in the specified ContentProvider*
+*The all above jargons means -> I'm a URI for ContentProvider on Android. And I'm accessing this specific droidtermexample provider and I'm only interested in the list of terms stored in droidtermexample data*
+*The URI defines the exact data you're trying to read or manipulate.*  
+
+5. In the case of reading from the ContentProvider, display the information in the UI  
+
+**Important Note** 
+>Now you might be scuffing right now and going, but lyla, how would I know what the structure of these URIs is even supposed to look like? I'm not a mind reader, and yes that is right. You are not a mind reader. Which is why if the designer of the ContentProvider followed conventions, which they hopefull did, they should have created a Contract class 
+
+*Always make your database operation calls off the main thread*  
+
+**Cursors** *are iterators that provide read/write access to data of a ContentProvider. The data in a tabular format*  
+
+1. Projection - filters columns  
+2. Selection - statement for how to filter rows  
+3. Selection arguments - what to filter  
+4. Sort order - how to sort rows  
+
+**When you first get your cursor back from the query method, it's position at row negative one, which is nothing**  
+
+**moveToNext()**  
+*Moves to next row*  
+*returns true/false*  
+
+**moveToFirst()**  
+*Moves to first row*  
+
+**getColumnIndex(String heading)**  
+*Given a heading of a column, return index*  
+
+**get<Type>(int ColumnIndex)**  
+*Return the value at the column index*  
+*<type> can be string, int, long, etc.*  
+
+**getCount()**  
+*Returns the number of rows in cursor*  
+
+**close()**  
+*Always close your cursor to prevent memory leaks*  
+
+#### Stage 8 Completed!  
