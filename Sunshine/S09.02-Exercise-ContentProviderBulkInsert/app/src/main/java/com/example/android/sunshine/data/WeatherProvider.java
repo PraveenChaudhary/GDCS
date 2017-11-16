@@ -20,8 +20,12 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 /**
  * This class serves as the ContentProvider for all of Sunshine's data. This class allows us to
@@ -49,6 +53,7 @@ public class WeatherProvider extends ContentProvider {
      * common convention in Android programming.
      */
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+    private static final String TAG = WeatherProvider.class.getSimpleName();
     private WeatherDbHelper mOpenHelper;
 
     /**
@@ -138,9 +143,39 @@ public class WeatherProvider extends ContentProvider {
      */
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-        throw new RuntimeException("Student, you need to implement the bulkInsert method!");
 
 //          TODO (2) Only perform our implementation of bulkInsert if the URI matches the CODE_WEATHER code
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int uriMatchCode = sUriMatcher.match(uri);
+        int rowsInserted = 0;
+        switch (uriMatchCode) {
+            case CODE_WEATHER:
+                try {
+                    db.beginTransaction();
+                    for (ContentValues cv: values) {
+                        long date = cv.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
+                        if (!SunshineDateUtils.isDateNormalized(date)) {
+                            throw new IllegalArgumentException("Date must be normalized to insert");
+                        }
+                        long id= db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, cv);
+                        if (id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } catch (Exception e) {
+                    Log.d(TAG, "Problem in inserting the row at this URI: " + uri);
+                } finally {
+                    db.endTransaction();
+                }
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsInserted;
+            default:
+                return super.bulkInsert(uri, values);
+        }
+
 
 //              TODO (3) Return the number of rows inserted from our implementation of bulkInsert
 

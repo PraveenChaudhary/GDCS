@@ -9,6 +9,7 @@
 [Stage 6](#stage6)  
 [Stage 7](#stage7)  
 [Stage 8](#stage8)  
+[Stage 9](#stage9)  
 
 
 <a name="stage1"/>
@@ -290,13 +291,13 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 
 **Data Persistence**  
 
-| Persistence Option | Type of data saved | Length of time saved |
-| --- |--- | --- |--- |
-| onSaveInstanceState | key/value(complex value by using parcelable interface) | While app is open |
-| SharedPreferences | key/value(primitive values) | Between app and phone restarts |
-| SQLite Database | Organized, more complicated text/numeric/boolean data | Between app and phone restarts |
-| Internal/External storage | Multimedia or larger data | Between app and phone restarts |
-| Server (ex. Firebase) | Data that multiple phones will access | Between app and phone restarts, deleting the app, using a different phone, etc |
+Persistence Option | Type of data saved | Length of time saved  
+--- |--- | --- |---  
+onSaveInstanceState | key/value(complex value by using parcelable interface) | While app is open  
+SharedPreferences | key/value(primitive values) | Between app and phone restarts  
+SQLite Database | Organized, more complicated text/numeric/boolean data | Between app and phone restarts  
+Internal/External storage | Multimedia or larger data | Between app and phone restarts  
+Server (ex. Firebase) | Data that multiple phones will access | Between app and phone restarts, deleting the app, using a different phone, etc  
 
 **PreferenceFragment**  
 *Because SharedPreferences are usually used for app settings, they work hand-in-hand with another part of the Android Framework. Which was meant for creating user interface for settings activities. This framework class is called PreferenceFragment.*  
@@ -494,3 +495,131 @@ Cursor cursor = resolver.query(DroidTermExampleContract.CONTENT_URI, null, null,
 *Always close your cursor to prevent memory leaks*  
 
 #### Stage 8 Completed!  
+
+<a name="stage9"/>
+
+## Stage 9 [14-11-2017]
+
+*Multiple rows of data, are generally called a directory. And a single row of data is often called an item.*  
+
+**Steps to create a ContentProvider**  
+1. (a) Create a class that extends from the content provider and (b) implement the onCreate() function. OnCreate() is called to initialize the ContentProvider.  
+2. Register you ContentProvider in the Manifest. -> ContentProviders need to be registered similar to activities. So that your app knows that the Provider exits and knows how to refer to it, by name and authority.  
+3. Define URI's that identify the ContentProvider that different data types that it can return. These are needed so that later on a ContentResolver can find the provider and the specific data you want to acdess just based on a given URI.  
+4. Add these URI's and String constants to the Contract class. That will help you refer to the most commoly used URIs.  
+5. Build URIMatcher to match URI pattens to integers. This is a clas that helps a ContentProvider recognize and respond correctly to different types of URIs. For example, it's often useful to use this matcher to distinguish between URIs that point to a large dataset, like multiple rows of task data. And URIs that point to a subset of that data, like data for an individual task.  
+6. Implement the required CRUD methods like query, insert, update and delete in ContentProvider.  
+
+>In general, onCreate is where you should initialize anything you'll need to setup access your underlying data source.  
+
+`android:exported="true OR false"`  
+*|^| the above atrribute is for provider tag in manifest. This tells the system whether or not ContentProvider can be accessed by other applications.*  
+
+>In general URIs tell ContentResolver two things.  
+1. Identify your provider (Which provider they want to talk to)  
+2. Identify different type of data (what specific data is being requested.)  
+
+*Wild card Character for number # in URI*  
+
+*URIMatchers have matching capabilities similar to regex pattern matching, but it's a quite a bit simpler. Regular expressions match a lot of special character, but a URIMatcher recognizes only two wildcard characters, an asterisk and that hash symbol that you just saw. The hash symbol can stand for an integer of any length. The asterisk stands in for a string of any length.*  
+
+**Examples of URI's with wildcard characters**  
+1. "path"-> matches "path" exactly  
+2. "path/#" -> matches "path" followed by a number  
+    # matches a string of numeric characters  
+3. "path/*" -> matches "path" followed by a string  
+    * matches a string of string of any length  
+4. "path/*/other/#" -> matches "path" followed by a string followed by "other" followed by a number  
+
+>Contract is designed to keep track of constants that will help you access data in a given database.
+
+>BaseContentUri = Scheme + ContentAuthority  
+BASE_CONTENT_URI -> this is an unchanging URI that will be the start of all the URI's we'll be using to access our provider.  
+
+Scheme = content://  
+Content authority = reference to the provider  
+                    (com.example.android.todolist)  
+Base content = URI scheme + authority  
+Pat = to specific data  
+Content URI = base content URI + path  
+
+**UriMatcher**  
+*Determines what kind of URI the provider receives and match it to an integer constant. So, that you can easily make a switch statement*  
+
+`UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);`  
+|^| pass the constant UriMatcher.NO_MATCH for building a empty uriMatcher  
+
+**Resolver to Database Flow**  
+*UI -> Resolver(URI) -> Provider -> URIMatcher -> SQL Code -> Database*  
+![ResolverToDatabaseFlow](./ResolverToDatabaseFlow.png "ResolverToDatabaseFlow")
+
+**Overview of Providers Functions** 
+1. onCreate() -> initializes tte provider  
+2. insert(Uri uri, ContentValues cv) -> to let users of your app create new data, you need to code the content provider's insert method. This will take in a content Uri which tells the correct directory to insert data into, and a ContentValues object that contains the new data to insert. After the data is inserted, this returns a newly created content URI that tells you the location of the inserted data.  
+3. query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrdder) -> To read data and display it in your UI, you'll write the query method which asks for data from your content provider. This return a cursor that contains a row, or rows, of data that the query has asked for.  
+4. update(Uri uri, ContentValues values, String selection, String[] selectionArgs)-> This takes in the same parametes as insert, so it knows where to update data by the Uri, and with what ContentValues. And this will return an integer value for the number of rows that were updated.  
+5.delete(Uri uri, String selection, String[] selectionArgs) -> And then to delete, you'll implement the delete method, which needs to know the Uri that points to the row, or rows, to delete. And this should return the number of rows deleted.  
+6. String getType(Uri uri); -> this will returns the MIME type of the content being returned. And a mime type is just a way of identifying what format the content is in, in a similar way to file types.  
+
+>SQLiteDatabse.insert() return an integer ID. If the insert wasn't successful, this ID will be -1. But if the insert is successful, we want the provider's insert method to take that unique row ID and create and return a URI for the newly inserted data. So, if the ID is valid means not 0 or -1, then the URI we construct will be our main Content URI, which has the authority and tasks path, with the id appended to it. And we can do that using `ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, id);  
+
+*One last thing, right before this return statement, you'll also notify the resolver that a change has occured at this particular URI. You'll do this using the notify change function. This is so that resolver knows that something has changed, and can update the database and any associated UI accordingly.*  
+
+>finish() tells system that this activity is over and so we should return to the MainActivity after an insert is complete.  
+
+**setNotificationUri() in query method**  
+*But this time it tells the cursor what content URI it was created for. This way, if anything changes in the URI, the cursor will know.*  
+
+*We can grab the ID that is passed into the URI by using a call to getPathSegments().get(1); by passing the 1 as the parameter if we pass 0 we get the path which is the name of our table in that URI.*  
+
+*if you plan to provide your app's data to other applications, you should implement all of the operations that you want other developers to be able to use.*  
+
+*getType() -> only becomes useful when MIME types are used to organize data or to validate data.*  
+
+```java
+/* getType() handles requests for the MIME type of data
+We are working with two types of data:
+1) a directory and 2) a single row of data.
+This method will not be used in our app, but gives a way to standardize the data formats
+that your provider accesses, and this can be useful for data organization.
+For now, this method will not be used but will be provided for completeness.
+ */
+@Override
+public String getType(@NonNull Uri uri) {
+    int match = sUriMatcher.match(uri);
+
+    switch (match) {
+        case TASKS:
+            // directory
+            return "vnd.android.cursor.dir" + "/" + TaskContract.AUTHORITY + "/" + TaskContract.PATH_TASKS;
+        case TASK_WITH_ID:
+            // single item type
+            return "vnd.android.cursor.item" + "/" + TaskContract.AUTHORITY + "/" + TaskContract.PATH_TASKS;
+        default:
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+    }
+}
+```
+
+**bulkInsert() ContentProvider's method**  
+*bulkInsert() tries to inset an array of ContentValues, not just one set, into a database*  
+
+**SQLiteDatabse Transaction**  
+*A transaction is a way to mark the start and end of a large data transfer*  
+db.beginTransaction();  
+db.setTransactionSuccessful();  
+db.endTransaction();  
+
+/*
+ * If we pass null as the selection to SQLiteDatabase#delete, our entire table will be
+ * deleted. However, if we do pass null and delete all of the rows in the table, we won't
+ * know how many rows were deleted. According to the documentation for SQLiteDatabase,
+ * passing "1" for the selection will delete all rows and return the number of rows
+ * deleted, which is what the caller of this method expects.
+ */
+
+**The best way to asynchronously load data from any ContentProvider is with a CursorLoader.**  
+
+*A CursorLoader is a subclass of AsyncTaskLoader that queries a ContentProvider, via a ContentResolver and specific URI, and returns a Cursor of desired data. This loader runs its query on a background thread so that it doesn’t block the UI. When a CursorLoader is active, it is tied to a URI, and you can choose to have it monitor this URI for any changes in data; this means that the CursorLoader can deliver new results whenever the contents of our weather database change, and we can automatically update the UI to reflect any weather change!*  
+
+#### Stage 9 Completed!
