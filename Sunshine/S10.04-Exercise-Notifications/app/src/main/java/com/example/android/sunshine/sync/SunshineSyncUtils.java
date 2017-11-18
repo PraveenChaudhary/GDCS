@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.android.sunshine.data.WeatherContract;
 import com.firebase.jobdispatcher.Constraint;
@@ -38,9 +39,9 @@ public class SunshineSyncUtils {
      * Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
      * writing out a bunch of multiplication ourselves and risk making a silly mistake.
      */
-    private static final int SYNC_INTERVAL_HOURS = 3;
-    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
-    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
+//    private static final int SYNC_INTERVAL_HOURS = 3;
+    private static final int SYNC_INTERVAL_SECONDS = 5;
+    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS;
 
     private static boolean sInitialized;
 
@@ -115,6 +116,7 @@ public class SunshineSyncUtils {
         if (sInitialized) return;
 
         sInitialized = true;
+        Log.d("varun", "true");
 
         /*
          * This method call triggers Sunshine to create its task to synchronize weather data

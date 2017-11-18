@@ -10,6 +10,7 @@
 [Stage 7](#stage7)  
 [Stage 8](#stage8)  
 [Stage 9](#stage9)  
+[Stage 10](#stage10)  
 
 
 <a name="stage1"/>
@@ -278,7 +279,7 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 
 >restartLoader will create loader if it doesn't yet exist
 
->Loaders are tied to the application lifecycle. They automatically handle changes in configuration, such as rotation. They are designed to reload if the user navigates away from the activity and then return. We can avoid that extra load if we don't find it desirable by caching and redelivering our existing result. 
+>Loaders are tied to the application lifecycle. They automatically handle changes in configuration, such as rotation. They are designed to reload if the user navigates away from the activity and then return. We can avoid that extra load if we don't find it desirable by caching and redelivering our existing result.
 
 
 **If you want to cache your result and put it back if you don't need to ftech the data again save the result and override deliverResult().**
@@ -291,13 +292,13 @@ Sharing content to Twitter is a bit of a curveball. We’ve taught you the best 
 
 **Data Persistence**  
 
-Persistence Option | Type of data saved | Length of time saved  
---- |--- | --- |---  
-onSaveInstanceState | key/value(complex value by using parcelable interface) | While app is open  
-SharedPreferences | key/value(primitive values) | Between app and phone restarts  
-SQLite Database | Organized, more complicated text/numeric/boolean data | Between app and phone restarts  
-Internal/External storage | Multimedia or larger data | Between app and phone restarts  
-Server (ex. Firebase) | Data that multiple phones will access | Between app and phone restarts, deleting the app, using a different phone, etc  
+ Persistence Option | Type of data saved | Length of time saved  
+ --- |--- | --- |---  
+ onSaveInstanceState | key/value(complex value by using parcelable interface) | While app is open  
+ SharedPreferences | key/value(primitive values) | Between app and phone restarts  
+ SQLite Database | Organized, more complicated text/numeric/boolean data | Between app and phone restarts  
+ Internal/External storage | Multimedia or larger data | Between app and phone restarts  
+ Server (ex. Firebase) | Data that multiple phones will access | Between app and phone restarts, deleting the app, using a different phone, etc  
 
 **PreferenceFragment**  
 *Because SharedPreferences are usually used for app settings, they work hand-in-hand with another part of the Android Framework. Which was meant for creating user interface for settings activities. This framework class is called PreferenceFragment.*  
@@ -362,7 +363,7 @@ editor.commit();//use apply insted of commit because apply perform the update of
 
 ## Stage 7 [12-11-2017]
 
-*On older android devices, this shared storage was actually on an external memory card.Today most android devices only emulate this card, so that there is the shared external storage app need available on the device. Some android devices have emulated shared storage and secondary external storage. Android 4.4 KitKat added 
+*On older android devices, this shared storage was actually on an external memory card.Today most android devices only emulate this card, so that there is the shared external storage app need available on the device. Some android devices have emulated shared storage and secondary external storage. Android 4.4 KitKat added
 an API to allow developers to access this secondary external storage*  
 
 >Contract in android is a class that defines the tables and the columns for each table that are included in the database. A good way to organize the contract class, is to put the definitions that relate generally to the whole database directly in the contract class. And then create an inner class for each table, and then includes the columns for each of those tables inside that inner class  
@@ -460,8 +461,8 @@ Cursor cursor = resolver.query(DroidTermExampleContract.CONTENT_URI, null, null,
 
 5. In the case of reading from the ContentProvider, display the information in the UI  
 
-**Important Note** 
->Now you might be scuffing right now and going, but lyla, how would I know what the structure of these URIs is even supposed to look like? I'm not a mind reader, and yes that is right. You are not a mind reader. Which is why if the designer of the ContentProvider followed conventions, which they hopefull did, they should have created a Contract class 
+**Important Note**
+>Now you might be scuffing right now and going, but lyla, how would I know what the structure of these URIs is even supposed to look like? I'm not a mind reader, and yes that is right. You are not a mind reader. Which is why if the designer of the ContentProvider followed conventions, which they hopefull did, they should have created a Contract class
 
 *Always make your database operation calls off the main thread*  
 
@@ -526,9 +527,9 @@ Cursor cursor = resolver.query(DroidTermExampleContract.CONTENT_URI, null, null,
 **Examples of URI's with wildcard characters**  
 1. "path"-> matches "path" exactly  
 2. "path/#" -> matches "path" followed by a number  
-    # matches a string of numeric characters  
+    "#" matches a string of numeric characters  
 3. "path/*" -> matches "path" followed by a string  
-    * matches a string of string of any length  
+    "*"" matches a string of string of any length  
 4. "path/*/other/#" -> matches "path" followed by a string followed by "other" followed by a number  
 
 >Contract is designed to keep track of constants that will help you access data in a given database.
@@ -553,7 +554,7 @@ Content URI = base content URI + path
 *UI -> Resolver(URI) -> Provider -> URIMatcher -> SQL Code -> Database*  
 ![ResolverToDatabaseFlow](./ResolverToDatabaseFlow.png "ResolverToDatabaseFlow")
 
-**Overview of Providers Functions** 
+**Overview of Providers Functions**
 1. onCreate() -> initializes tte provider  
 2. insert(Uri uri, ContentValues cv) -> to let users of your app create new data, you need to code the content provider's insert method. This will take in a content Uri which tells the correct directory to insert data into, and a ContentValues object that contains the new data to insert. After the data is inserted, this returns a newly created content URI that tells you the location of the inserted data.  
 3. query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrdder) -> To read data and display it in your UI, you'll write the query method which asks for data from your content provider. This return a cursor that contains a row, or rows, of data that the query has asked for.  
@@ -623,3 +624,213 @@ db.endTransaction();
 *A CursorLoader is a subclass of AsyncTaskLoader that queries a ContentProvider, via a ContentResolver and specific URI, and returns a Cursor of desired data. This loader runs its query on a background thread so that it doesn’t block the UI. When a CursorLoader is active, it is tied to a URI, and you can choose to have it monitor this URI for any changes in data; this means that the CursorLoader can deliver new results whenever the contents of our weather database change, and we can automatically update the UI to reflect any weather change!*  
 
 #### Stage 9 Completed!
+
+<a name="stage10"/>
+
+## Stage 10 [15-11-2017]
+*One of the most powerful features of Android has always been the ability for apps to run in background. As is usually the case though, with great power comes great responsibility. So if you're building an app that has significant background components, you need to be very conscious of how it's consuming resources. A poorly behaved background app can have a seriously negative impact on the overall user experience.*  
+
+**Services**  
+*Services are Android Framework Components meant for running background tasks that don't need a visual component. Because of this services unlike activity, do not provide a user interface. An activity can start a service, which will then continue to run even after the activity is shut down. Therefore, services are great for things like loading and processing of data in the background even when none of these activity are open*  
+
+**Activity**  
+*The android component that is tried to the User Interface of your application*  
+
+>In fact it doesn't make sense to do network transaction that talk to a database inside of an any activity  
+
+*Services are one of the four primary Android components and needs to be registered in the Android manifest. Including activities, ContentProvider and Broadcast receivers.  All connected using Intents.*  
+
+**Loader vs Services**  
+
+*Where use Loader*  
+1. When task tied to the Activity Lifecycle  
+2. Easy to make user interface changes and communication with Activity  
+
+>for example decoding an image that was going to be used in an ImageView. Or querying a database that is going to be used to populate a recycler view adapter. Some network transaction even fall into this use case. If your app is inherently real time, you might want to just fetch data as you need it in the UI rather than cache the data in a database.  
+
+*Where to use Services*  
+1. When the task that you are doing is Decoupled from the user interface. An example would be updating a database in the background. While the user interface needs to know that this is happening, the operation should continue, even if the application doesn't have an active window.  
+2. Exists even when there is no user interface.  
+
+
+>In short, if you're loading or processing data that will be used in the UI, use a loader. If you need to process upload or download in a way where end result will not directly affect the UI such as caching data in database, do it in a servie. 
+
+#### Services  
+*Services hang out in the background, processing, downloading, or uploading data while the phone is locaked or the user is using the unrealted apps.*  
+
+**How to start a service**  
+*There are three ways to start a service*  
+1. Start -> The most straightforward way to start a service is to call the startService() method from a Context, such as an activity. The service will execute, but will not communicate back to the component which started it. For example EmailService  
+2. Schedule -> If you want to have a service execute as some point in the future, or when some condition are met, you can create a special type of service called JobService. You create your JobService, and then you define when the job should run using a scheduler, like JobScheduler or FirebaseJobDispatcher. They allow you to define complex run schedules for your service, like have a service run every 24 hours when on Wi-Fi. Then the scheduler schedules the job for you.  
+3. Bind -> A bindService() offers a client-server like interface. With your service being the server and the various components binding to the service being the clients. Components bind to the service using the bindService() method. Unlike started services, which you tend to start and then forget about. Bound services can easily communicate back to the components that are bound to them. An example of when you migh use a bound service is a media player application. You might have a bound service which plays audio and an activity which controls the UI. It's important to use a bound service as oppose to a started service because you probably want to update the UI to represent where in the audio you are. If you press the pause button in the activity, you might also want to send additional commands to the service from the activity. Note that a service being bound or started is not mutually exclusive. A service can be both Started & Bound
+
+>There is one fact though that confuses a lot of developers. All android core components start on the main thread. This means that Activites, ContentProviders, Broadcast Receivers, and yes even Services, start their life on the main application thread. To be clearer, the base Service class is started on the main thread. And it will block your UI if you run a long running task. To get around this, you'll need to create a background thread, or AsyncTask, from within your service.  
+
+**How to do this right?**  
+
+>From a high level, services like activities, have a lifecycle. Their lifecycle is different from activity's though. For a simple started service, the service is created when a context, such as an activity, calls startService(), passing in an intent. This is very similar to how you start an activity using an intent using startActivity(). What this does is trigger the service's onCreate() method. Just as with an activity, onCreate is responsible for any setup. After that, onStartCommand is called. And inside the onStartCommand method is where you should actually do whatever it is that your service does (Start the AsyncTask here). When your service is done, you can signal this by calling stopSelf() (The service is stopped by itself or a client. Note that if you're using jsut the service class, you, as a developer, will need to call this method. calling stopSelf() will then trigger onDestroy() and the service will be destroyed.  
+
+>Now running time consuming taska from a service in a background thread is fairly common thing to do. So, the Android framework actually contains a helpgul subclass of service called **IntenService**  
+
+**Intent Service**  
+*Unlike the service class we just talked about, IntentService is a service that actually runs in a seperate background thread altogether*  
+
+**Starting an Activity**  
+```java
+Intent myIntent = new Intent(this, MyActivity.class);
+startActivity(myIntent);
+```
+
+**Starting an IntentService** 
+```java24
+Intent myIntent = new Intent(this, MyIntentService.class);
+startService(myIntent);
+```
+
+**How to create a IntentService class**  
+*First you create a class that extends from IntentService. Inside that class, you will specify what your IntentService should do in the background by overridding the onHandleIntent() method. Then you simply create an Intent and pass in that service class. Finally, to start it, you just call startService() as opposed to startActivity(). You pass in the Intent you just created which inside has your IntentService. Yup, that's an IntentService inside an Intent, an Intent-ception. Once on startService() is called it launches an IntentService, runs the code inside the onHandleIntent() on a background thread, and then stops itself when it's done*  
+
+>Note that the intent object passed into the onHandleIntent() method is the same intent you created when using the startService(). Which means you could attach the extra data when creating it. And then you can access that data inside onHandleIntent() and use it to say decide what action to perform using that intent. It's important to note that all IntentService requests are handled in a single background thread, and they are issued in order. Each IntentService will take as long as necessary and will not block the application's main thread. But only one call to the IntentService's onHandleIntent() method will be processed at a time. This makes IntentService great for tasks that need to occur in order such as updating the counter in our case.  
+
+```xml
+<plurals name="charge_notification_count">
+   <item quantity="zero">Hydrate while charging reminder sent %d times</item>
+   <item quantity="one">Hydrate while charging reminder sent %d time</item>
+   <item quantity="other">Hydrate while charging reminder sent %d times</item>
+</plurals>
+```  
+
+```java
+String formattedChargingReminders = getResources().getQuantityString(R.plurals.charge_notification_count, chargingReminders, chargingReminders);
+```
+*The first usage of chargingReminder is the quantity number. It determines which version of the pluralized string to use (you must pass in a number). The second usage of chargingReminder is the number that’s actually inserted into the formatted string.*  
+
+*Services like every other android component needs to be registered in the android manifest file. Go to AndroidManifest.xml file and create a new service tag. We'll do that within our application's tag itself. We'll set the android:name pointing to our intent service class and we'll set the android:exported="false". This works the same way as an exported tag for ContentProviders. It controls whether other applications can access your service. This is important because we only want to our app to be able to call our service.*  
+
+**Notification**   
+*Though notifications started out as a convenient way to notify users of background updates, they've grown to become a powerful standardized shortcut to interact directly with apps in a lightweight way.*  
+
+*Starting in jellybean, rich notification were able to include actions. Which let you define two or three specific actions to performs on the data included in the notification.*    
+
+*Lollipop added new template types for notifications along with heads-up notifications.*  
+
+*Nougat changes the layout of notifications to always show the app posting them. The new APIs allows for inline replies to notifications, similar to Android Wear,  as well as specifying custom layouts for heads-up and big notifications.*  
+
+>The best part is that Android support library wraps almost all of these platform differneces with an easy to use API.  
+
+**Note:- But don't overdo it with notifications, there's a fine line between useful and spammy And it's only a couple of clicks for a user to disable your apps notifications permanently.**  
+
+*As a standardized UI designed for specifically conveying timely information in limited time space, they're an obvious mechanisms to use when Android expanded into wearables with Android Wear. Suddenly, the rich notifications you designed for phone and tablet make your app wearable compatible for free*  
+
+*To launch the app when the notification clicked, we have first need to learn about something called PendingIntents. You've already seen and used intents a couple of times before. Intents allows your application to launch activities within the same app ,or launch other applications altogether, either explicitly or implicitly using URIs. Launching other apps or services from your own application requires the manifest to include the appropriate permisssions. But what if we want another applications to launch an activity in your own applications. Like in the case with notifications. Any notifications in Android is displayed by a system service called NotificationManager. A system service is a service that starts by the Android system itself, and is not part of your application processes at all, which means, If you want the NotificationManager to be able to launch an ativity in your application, you needed to have the permissions to do so. And since you can't modify the system's service permissions, pending intents come to play. A PendingIntent is a wrapper around a regular intent, that is designed to be used by another application. The PendingIntent gives that application the ability to perform the included actions as if it was your application, with all the permissions your application has been granted. It can launch services, private activities, and Broadcast protected intents, even if the your applications is no longer running. This works great for the notification service, because we want to able to launch the hydration activity from the notification pop-up even if the app was closed. To create a PendingIntent instance, you can use one of those static methods in the PendingIntent class. Either getActivity or getService or getBroadcast, depending on what intent you want to wrap in the PendingIntent. Note that these all methods return the actual instance of PendingIntent that you will pass to another app, which in our case will be the NotificationManager. And then you can expect the NotificationManager to lauch our activity when the user click on the Notification*  
+
+>Since the launch of Android Jelly Bean, notification can take up to three action buttons, which appear in the notification itself. Each action button can launch a different pending intent and perform different actions on your app. Even though actions are optional, you should at least set the notification to allow the users to lauch the app so that they can look at the event that caused this notification to show up in the first place.  
+
+**A special type of service called a foreground service**  
+*One common example of a foreground service is a music player that's able to play music long after you've navigate away from the actual audio player activity. Another example is when you get direction via Google Maps after you've closed the app. If you've navigates somewhere while google maps wasn't active, you've used the Google map foreground service.*    
+
+**What is foreground Service?**  
+*And what makes these two examples foreground services as opposed to plain old background services? A foreground service is a service that the user is actively aware of because Android requires that service post a non-dismissible ongoing notification. They are typically used to show the user the real-time progress of a long-running operation. Because these notifications exist, the user can do some rudimentary interactions with your service, such as pausing the music, or stopping the service entirely. In addition, because the service is doing something very visible and likely important for the user, Android will prioritize not shutting these services down even if the system is memory constrained.*  
+
+**Application Priority**  
+*App priority is divided into four general buckets critical, high, medium, and low. Critical apps are those which are active. They're in the foreground interacting with users. That includes activities in the foreground and apps running a foreground service. An activity in the foreground is slightly more important than a foreground service only on recent Android releases. But both are considered critical. So if you're running a very heavy weight app in the foreground or your foreground service process is very heavy iteself, Android may kill your other foreground services. Visible activities are high priority, while less impactful than killing a foreground app or foreground service, destroying visible activities is still quite undesirable, because users will most likely notice it. Services are important but they can be killed much of the time without impacting the user directly. That being said the system tries to keep them alive and will even try to restart sticky services, services process comes in medium bucket. Apps that running in the background are either completely empty with no active Android component or apps with a stopped component, but not yet destroyed. They're the red shirted instance of the app priority landing party. Android keeps both of these around as much as possible, killing empty apps first, because keeping allocated memory around is cheap, while restarting apps can be relatively expensive. They'll be killed as needed in a last seen, first killed order to support the higher priority apps.*  
+
+**Three laws of Android resource management**  
+1. Android will keep all apps that interact with the user running smoothly.  
+2. Android will keep all apps with visible activities followed by services running, unless doing so violates the first law.  
+3. Android will keep all apps in the background running, unless this violates the first or second law.  
+
+
+
+**Consider these four apps. Which priority order would the system rank them in?**  
+
+1. Gmail doing a background mail sync.
+2. Google Music playing a song in the background.
+3. The Camera app being used to take a photo.
+4. Google Maps in the background
+
+>Answer -> C,B,A,D
+
+*That's right -- Maps isn't visible or running any services, so it's the most likely to be killed --- if we were navigating, it would be completely different.
+
+Gmail is running a service of some sort but not directly interacting with the user, while Google Music and the Camera app are.
+
+Of those two, the music app is still only a foreground service, so it's got a slightly lower priority -- though neither will be killed unless memory pressure is exceptional. Which, since the camera app is pretty heavy-weight, it could be.
+*
+
+**JobScheduler**  
+*In android L JobScheduler was introduced.*  
+
+**FirebaseJobScheduler**  
+*It's a more compatible version of JobScheduler. Since JobScheduler was introduced in Android L, it inly provides compatibility back to API level 21, whereas FirebaseJobScheduler provides compatibility back to API level 9 Gingerbread
+
+**What is Google Play Services**
+
+*You might be wondering what's up with the GooglePlayDriver. FirebaseJobDispatcher has a dependency on Google Play Services, which is why you need a GooglePlayDriver. So what is Google Play Services?
+Google Play Services is app that Google maintains which comes pre-installed on and runs in the background on many, many phones. It is essentially a collection of Services that your app can use to leverage the power of Google products. If the user has the Google Play Services apk installed (and many do) you can use Google Play Services Libraries to easily do things like use the Places API to know where your user is or integrate Google sign in. FirebaseJobDispatcher is one of the many services you can take advantage of via Google Play Services.
+Google choose to distribute these services as an installable apk so that updates to the services are not dependent on carrier or OEM system image updates. In general, devices running Android 2.3 (API level 9) or later and have the Google Play services app installed receive updates within a few days.*
+
+>JobService need to tell the system when the job is actually done by calling jobFinished(). The job is done when the AsyncTask is Done. And AsyncTask signals that it's done by calling onPostExecute. So, call the jobFinished() inside the onPostExecute() method of AsyncTask and pass the jobparamters and false. The jobParamters are are a bundle of key value arguments that are passed in when the job starts. And a boolen parameter, and here we pass false, because false here represent whether or not the job needs to be rescheduled. The job was successful. So, there's no need to reschedule, which is why we're passing false here. 
+
+**onStopJob(JobParameters jobParamters)**
+*Well, it gets called if the requirements of your job are longer met. So for example, let's say tat you maybe specify a job that wants to upload large video fiels. And because you want to be kind to your users data plan, you say that you're going to do this over wifi. In this case, onStopJob would be called if for example you started this job when the user was on WiFi. And then in the middle of uploading this huge file, the wifi connection get shut off. So in our case what we're going to do here, is we're going to see if our AsyncTask is null. And if it's not null, we're going to go ahead and and cancel that backgroundTask. And return true from the onStopJob() method. And what returning true means, is that as soon as the condition are re-met, the job should be retried again.*
+
+**System Broadcast Intent**  
+*A special intent sent by the system when events occur on the phone*
+
+**Broadcast Receiver**  
+*Core android component that enbles applications to receive intents that are broadcast by the system or by other applications. A broadcast Receiver can be triggered even when the app is not running.*
+
+**IntentFilter** 
+*Expression that says what intent should trigger your component. It should be noted that intent filters are not specific to broadcast receivers. For example, the first activity in your app always has an intent filtet. This intent filter uses the action Main, and the category LAUNCHER, as seen here. This signals that this is the main entry point for your app. And when the launcher starts an intent to launch the app, this is the activity that should be triggered by that intent.*
+
+**Two ways to create a Broadcast Receiver**  
+1. Statically
+2. Dynamically 
+
+>The difference is that static is broadcast receivers are triggered whenever the broadcast intent occurs. The receiver will be triggered even if the app is offline. This is opposed to dynamic broadcast receivers, which are tied to the app's life cycle. Generally, if possible, it's better to create a dynamic broadcast receiver, or to use job scgeduling, if you can. Relying on static broadcast receiver can be problematic. It involes registering the receiver in the manifest, and using the XML intent-filter tags and this will trigger the a broadcast receiver java class that you mentioned in the xml code. It would be a class that extends BroadcastReceiver and implements the onReceive method, onReceive takes a context and the broadcast intent that triggered that broadcast. Because this is a static BroadcastReceiver that was defined in the manifest, this BroadcastReceiver would be triggered whenever a photo was taken, even if your app isn't running. Now, this is very powerful, but it's also very easy to abuse. Just think of what would happend if the user had downloaded ten apps that were all using the new picture taken broadcast. Whenever a new picture was taken, suddenly a bunch of apps would be triggered, and the device would slow to a crawl. Because of this, some broadcast intents won't even let you statically define a broadcast receiver. Specifically, intents that have the FLAG_RECEIVER_REGISTERED_ONLY. So if you need to execute code when your app isn't running, Schedule a job if possible. Jobs have constraints for the most common situations, as we mentioned, such as wifi and charging. And jobs are set up to be very battery friendly. That said, in some cases, you will need to register a static broadcast receiver. These are usually cases where you need to catch certain specific intents on older devices when the app is not running. But if you need to listen for system broadcasts when the app is running, dynamic broadcast receivers are your best option. 
+
+
+**Helpful adb Commands**  
+
+*To simulate the phone being unplugged from usb charging you can use:*  
+
+`adb shell dumpsys battery set usb 0`
+
+*or if you're on a device Android 6.0 or higher you can use:*  
+
+`adb shell dumpsys battery unplug`  
+
+*To "plug" the phone back in, just reset it's charging status using:*  
+
+`adb shell dumpsys battery reset`
+
+
+**Getting the Current Battery State**  
+*As mentioned, our code currently contains a bug. Our app adds and removes the dynamic broadcast receiver in onResume and onPause. When the app is not visible, the plug's image will not update. This can lead to the plug sometimes having the incorrect image when the app starts.*  
+
+*Now we could move the code to dynamically add and remove the broadcast receiver in different lifecycle methods, for example onCreate and onDestroy, but this would cause us to waste cycles swapping around an image which isn't even on screen. A better approach is to check what the current battery state is when the app resumes and update the image accordingly.There are two ways to do this, depending on whether you're on API level 23+ or before.*  
+
+**Getting Charging State on API level 23+**  
+
+*To get the current state of the battery on API level 23+, simply use the battery manager system service:*
+
+```java
+BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+boolean isCharging = batteryManager.isCharging();
+```
+
+**Getting Charging State with a Sticky Intent**  
+
+*Prior to Android 23+ you needed to use a sticky intent to get battery state. As we've seen, a normal, broadcasted intent will be broadcasted, possibly caught by an intent filter, and then disspear after it is processed. A sticky intent is a broadcast intent that sticks around, allowing your app to access it at any point and get information from the broadcasted intent. In Android, a sticky intent is where the current battery state is saved.*  
+
+*You don't need a broadcast receiver for a sticky intent, but you use similar looking code to registering a receiver:*
+
+```java
+IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+Intent batteryStatus = context.registerReceiver(null, ifilter);
+```
+
+*Notice how registerReceiver is used, but instead of passing in a broadcast receiver, null is passed. The intent filter here is the intent filter for the sticky intent Intent.ACTION_BATTERY_CHANGED. The registerReceiver method will return an intent, and it is that intent which has all of the battery information, which you can use:*
+
+#### Stage 10 Completed!
