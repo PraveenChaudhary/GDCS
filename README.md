@@ -11,6 +11,7 @@
 [Stage 8](#stage8)  
 [Stage 9](#stage9)  
 [Stage 10](#stage10)  
+[Stage 11](#stage11)  
 
 
 <a name="stage1"/>
@@ -834,3 +835,81 @@ Intent batteryStatus = context.registerReceiver(null, ifilter);
 *Notice how registerReceiver is used, but instead of passing in a broadcast receiver, null is passed. The intent filter here is the intent filter for the sticky intent Intent.ACTION_BATTERY_CHANGED. The registerReceiver method will return an intent, and it is that intent which has all of the battery information, which you can use:*
 
 #### Stage 10 Completed!
+
+<a name="stage10"/>
+
+## Stage 11 [16-11-2017]
+
+**View**  
+*In order to build UI in Android, we use Views essentially, a view handles drawing and event handling*  
+
+**ViewGroups**  
+*A ViewGroup is a container for children views and is the base class for all layouts in android. It's worth mentioning here that a view group enhanced all the layouts extends from the base view class, which means that any layout is a view itself. That means you can nest view groups and layouts within each other, opening up tons of possibilities of designing any layouts you can imagine but be careful. Nesting too many layouts in one another, may effect the overall performance when rendered.*
+
+**ConstraintLayout**  
+*ConstraintLayout allows you to create a complex layout without having to nest ViewGroups inside each other. The underlying structure of a ConstraintLayout is much simpler. And hence, it usually outperforms other layout types. The ConstraintLayout is built as a separate support library that works on all Android versions back to the Android 2.3*
+
+>To define a view's position in a ConstraintLayout, you must add two or more constraints for each view. each constraints represents a connection or alignment to another view or to the parent layout
+
+*Vector images like this SVG file are the best to you in your Android application. Because they can resize easily to work with any phone size and resolution without affecting the quality of your image*
+
+>A general rule of thumb is to have a maximum of 80 views in a single layout, and never more then ten nested view groups.
+
+*Android offers a really cool library called the Data Binding Library. This can help us link any UI with actual data without having to call the findViewById for every view item.*  
+**How to use the DataBinding Library**  
+1. Enable data binding in build.gradle
+2. Add <layout> as the root tag to the UI
+    1. Android automagically generates a binding class for any layout that includes this tag as its root.
+3. Create a binding instance 
+4. Set the content view using DatabindingUtil
+5. Bind each attribute in the views to the corresponding data
+
+>Note:- Android Studio 2.1 and above support DataBinding and to API level 7+
+
+
+**Accessibility**  
+Accessibility refers to the design of products, devices, services, or environments for people who experience disabilities. Android provides accessibility features like 
+*Accessible means your app can be utilized by users have visula or physical limitations, that prevent them from fully seen or using a touch screen. Along with users hearing loss who may not be able to perceive audible information and alerts*  
+
+**Internationalization** 
+Localization (also known as Internationalization) is the adaptation of a product or service to meet the needs of a particular language, culture or desired population's "look-and-feel".
+*Internationally friendly, means that your app can be translated to other languages without effecting the integrity and layout design. Specifically, for a right to left languages.*  
+
+>ContentDescription is just one of many things you need to consider when building your app for accessibility, others include:
+
+1. Enable focus-based navigation which makes sure users can navigate your screen layouts using external hardware like bluetooth keyboards.
+2. No audio-only feedback which guarantees any audio feedback to always have a secondary feedback mechanism to support users who are deaf or hard of hearing
+
+
+*TextViews typically don't need any content description as the screen reader can simply read out the text, specially when the text view is a label describing something itself!
+
+Input EditTexts are identified by the screen-reader and hence do not need any extra contentDescription.
+
+Text-based Buttons typically don't need any content description as the screen reader can simply read out the text inside the button.
+
+Text labels, text-based Buttons and EditTexts don't really need a content description as the screen reader can easily read the text inside.
+
+However Images and image-based Buttons do need some explanation to help those who cannot see them well.*
+
+*Sometimes however, you would still want to use the strings recourses for strings that you don't intend to translate, this includes strings representing identifiers for views or variable names os string formats etc.
+
+For those strings, there's an attribute called translatable that can be set to false to indicate that this string recourse should not be translated.
+
+<string name="timeFormat" translatable="false">hh:mm a</string>
+*
+
+>Keep in mind that these Start and End attributes are relatively new, so to support older devices (prior to 4.1) you should still backup the Start and End margins with the outdated Left and Right ones with the same values, and if your app ends up running on a more recent device the Left Right margins are ignored and the Start End ones are used instead.
+
+**Responsive Design**  
+*A responsive UI is simply a UI that reacts to the amount of available space in the screen*
+
+*Use <include layout="@layout/layout_xml_file_name_inside_the_layout_folder"> to include pieces of xml chomuus and make a big chomu layout*
+
+**Note:- Cahe id xml code m asse hi kyu na ho like mera_naam par DataBinding library iss ko asse bana de ga meraNaam samjha ghochu, java code m access karne k liye**
+
+*agar tu kisi xml layout k andar include tag k through koi chota xml layout inject karta hai toh tere ko DataBinding m uss layout id ko nest kar ke fhir un view ki id ko nest karna hoga jo small layout xml file m the agar tu ne DataBinding instance ko reference big xml file ka diya hai jis m small xml file include tag k through inject ho rhi hai, samjah chhottu*
+
+layout-land
+values-port
+
+#### Stage 11 Completed!
