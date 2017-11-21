@@ -12,6 +12,7 @@
 [Stage 9](#stage9)  
 [Stage 10](#stage10)  
 [Stage 11](#stage11)  
+[Stage 12](#stage12)  
 
 
 <a name="stage1"/>
@@ -628,7 +629,7 @@ db.endTransaction();
 
 <a name="stage10"/>
 
-## Stage 10 [15-11-2017]
+## Stage 10 [15-11-2017] - [16-11-2017]
 *One of the most powerful features of Android has always been the ability for apps to run in background. As is usually the case though, with great power comes great responsibility. So if you're building an app that has significant background components, you need to be very conscious of how it's consuming resources. A poorly behaved background app can have a seriously negative impact on the overall user experience.*  
 
 **Services**  
@@ -838,7 +839,7 @@ Intent batteryStatus = context.registerReceiver(null, ifilter);
 
 <a name="stage10"/>
 
-## Stage 11 [16-11-2017]
+## Stage 11 [17-11-2017]
 
 **View**  
 *In order to build UI in Android, we use Views essentially, a view handles drawing and event handling*  
@@ -913,3 +914,98 @@ layout-land
 values-port
 
 #### Stage 11 Completed!
+
+<a name="stage12"/>
+
+## Stage 12 [18-11-2017]
+
+>Users judge the quality of your app within the first 30 seconds. It may not be fair, but, a disproportionate amount of that judgement will be based not on the functionality, but on the visual aesthetics. Does it look polished? Does it look professional? How easy is it to use?
+
+**Mockup**  
+*A model of an app, used for design evaluations.* 
+
+**keyline**  
+*Lines that specify the size and spacing of app components.*
+
+**Material Design**  
+*A set of principles for creating useful and beautiful visuals.*
+
+**Primary Color**  
+*The Primary color is the main color base for your app. Views and components like the menu bar will generally include this color.*  
+
+**Accent Color**  
+*The accent color is typically brighter, and serves to draw attention to key elements like buttons in an app.*  
+
+>The default text for Android is a font called Roboto, which is designed to work across a range of differently sized platforms. And it comes in a variety of font families.
+
+**Font Families**  
+*Font-families are ggroups pf fonts that share similar design characterstivs like serif or sans-serif*  
+
+**Scale-independent Pixels**  
+*Scale-independent pixels will stay the same physical size accross different resolution screens. Text size is measured in units of sp.*  
+
+**Style**  
+*A style is an xml resource file, separate from the layouts, where you can set all these properties in one place. Then later, we can apply that style to any view we want*  
+
+**Theme**  
+*And a theme is created in the same way, and is just a style that's applied to an entire Activity or application and not just one view*  
+
+**Style Inheritance**  
+*Styles and themes use inheritance similar how classes use inheritance. If a style has a parent, it will inherit all the properties that the parent style include, whether that's color or padding or more. And then it can define only the properties that you want to add to that style or override in the parent class.*
+
+**Responsive Design**  
+*Responsive design is the act of creating designs that respond to and work well on a variety of screen sizes, shapes and orientation*  
+
+>Android categorizes the device screens using two general properties, size and pixel density.
+
+**Density** 
+*Density is the number of pixels in the physical area of the screen, and it's often measured in dots per inch or "dpi."*  
+
+**Density-Independent Pixels**  
+*Density Independent Pixels, or dips[dps] for short, are the same physical size on each device.*  
+
+>All externalized Android resources, everything from strings to layouts to drawables and animations, are all stored within your project's res folder. 
+
+>Android allows you to create alternative versions of every resource by placing them into folder with different qualifiers. We separate each of those using a hypen. And we can add those qualifiers based on anything, from language and/or dialect to whether the device is docked, the type of touch screen, the pixel density of the display, the orientation of the screen. And most importantly, for a responsive design in particular, the samllest available screen width which you can support with that layout. At runtime, android will check the current device configuration, its language, its screen size, pixel density, everything, and then load the right layouts, strings, and drawables accordingly. And you can even chain these qualifiers togeter. For example, to create a different layout for German language users.
+
+>And when it comes to providing alternative layouts, Android has gone through a few alternative models, starting in the early days with this screen buckets idea of small, normal, large, and extra large. But since Android3.2, the new smallest width qualifier has given us much more fine-grained control over our layouts.
+
+```xml
+res/
+    values/
+        strings.xml 
+    layout/
+        main_activity.xml
+    values-fr/
+    values-fr-rCA/
+    layout-desk/
+    layout-stylus/
+    drawable-xhdpi/
+    layout-land/
+    layout-sw720dp/
+```
+
+*Say your app is on a Nexus 5, Which has dimensions 360 by 640dps. Android knows that the smallest width, no matter te orientation of this device, is 360dp.*  
+
+>You can also use the smallest width qualifier to create alternate values resource folders. 
+
+**600dp is the usual cutoff for 7 inch tablet screens**
+
+```xml 
+<style name="ActionBar.Solid.Sunshine.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="displayOptions">useLogo|showHome</item>
+        <item name="logo">@drawable/ic_logo</item>
+</style>
+```
+
+*Remember the selected states are as follows: android:state_pressed, android:state_activated, and android:state_selected.*  
+
+**Concepts from this stage**  
+1. Colors and fonts
+2. Styles and Themes 
+3. Touch Selector
+4. Resource qualifier
+
+#### Stage 12 Completed!
+
+#### The End
